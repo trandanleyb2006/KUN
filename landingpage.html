@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KUN: Con Khỏe Toàn Diện, Mẹ Trọn Tết Vui!</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- CÀI ĐẶT CƠ BẢN --- */
+        :root {
+            --red-kun: #D83A56;  /* Màu đỏ chủ đạo (màu Tết) */
+            --yellow-kun: #FFC107; /* Màu vàng Tết (cho mini game) */
+            --text-dark: #333;
+            --text-light: #555;
+            --bg-light: #FFFBF7; /* Màu nền kem nhẹ */
+            --white: #ffffff;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth; /* Cuộn mượt khi bấm link nav */
+        }
+
+        body {
+            font-family: 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--white);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        /* --- CẤU TRÚC CHUNG --- */
+        .container {
+            width: 100%;
+            max-width: 1100px; 
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        section {
+            padding: 60px 0; 
+        }
+        
+        /* CSS cho phần banner (không còn ảnh nền) */
+        section.hero {
+            padding: 0; 
+            line-height: 0; /* Xóa khoảng trắng thừa dưới ảnh */
+        }
+
+        /* Style cho ảnh banner (thẻ <img>) */
+        .hero-banner-image {
+            width: 100%;
+            height: auto; /* Tự động điều chỉnh chiều cao */
+            object-fit: cover; /* Đảm bảo ảnh lấp đầy */
+        }
+
+        h1, h2, h3 {
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        h1 { font-size: 48px; }
+        h2 { font-size: 36px; color: var(--red-kun); }
+        h3 { font-size: 24px; color: var(--red-kun); }
+        p { font-size: 16px; color: var(--text-light); }
+
+        /* --- HEADER (THANH ĐIỀU HƯỚNG) --- */
+        header {
+            background-color: var(--white);
+            padding: 15px 0;
+            border-bottom: 1px solid #f0f0f0;
+            position: sticky; 
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo img {
+            height: 45px;
+        }
+
+        header nav {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+        header nav a {
+            text-decoration: none;
+            color: var(--text-light);
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        header nav a:hover {
+            color: var(--red-kun);
+        }
+
+        .btn {
+            display: inline-block;
+            text-decoration: none;
+            color: var(--white);
+            font-weight: 700;
+            padding: 12px 28px;
+            border-radius: 30px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background-color: var(--red-kun);
+            border: 2px solid var(--red-kun);
+        }
+        .btn-primary:hover {
+            background-color: #b72f48;
+            border-color: #b72f48;
+            transform: translateY(-2px);
+        }
+        
+        /* --- PHẦN GIỚI THIỆU NGAY DƯỚI BANNER --- */
+        .intro-text-below-banner {
+            background-color: var(--white);
+            text-align: center;
+            padding: 40px 0; 
+        }
+
+        .intro-text-below-banner p {
+            font-size: 20px; 
+            color: var(--text-dark); 
+            max-width: 800px;
+            margin: 0 auto 30px auto;
+        }
+        .intro-text-below-banner .btn {
+            margin-top: 15px; 
+        }
+
+        /* --- 2. NỖI LO CỦA MẸ --- */
+        .problem {
+            background-color: var(--bg-light);
+            text-align: center;
+        }
+        .problem h2 {
+            margin-bottom: 40px;
+        }
+        .problem-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+        .problem-item {
+            padding: 20px;
+        }
+        .problem-item img { 
+            width: 80px;
+            height: 80px;
+            margin-bottom: 15px;
+            border-radius: 50%;
+        }
+        .problem-item h3 {
+            font-size: 20px;
+            color: var(--text-dark);
+            margin-bottom: 10px;
+        }
+
+        /* --- 3. GIẢI PHÁP KUN (3 SẢN PHẨM) --- */
+        .solution {
+            background-color: var(--white);
+            text-align: center;
+        }
+        .solution h2 {
+            margin-bottom: 40px;
+        }
+        .solution-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); 
+            gap: 30px;
+            text-align: left;
+        }
+        .solution-card {
+            display: flex;
+            flex-direction: column;
+            text-align: center; 
+            gap: 15px;
+            background-color: var(--white);
+            border: 1px solid #eee;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .solution-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .solution-card img {
+            width: 100%; 
+            max-width: 250px; 
+            height: 250px; 
+            object-fit: contain;
+            border-radius: 10px;
+            margin: 0 auto; 
+        }
+        .solution-card h3 {
+            font-size: 20px; 
+            color: var(--text-dark); 
+        }
+
+        /* --- 4. KHU VỰC CHỨNG THỰC (SOCIAL PROOF) --- */
+        .social-proof {
+            background-color: var(--bg-light);
+            text-align: center;
+        }
+        .social-proof h2 {
+            margin-bottom: 30px;
+        }
+        .testimonial {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 30px;
+            background-color: var(--white);
+            border-left: 5px solid var(--red-kun);
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.07);
+        }
+        .testimonial p {
+            font-size: 18px;
+            font-style: italic;
+            color: var(--text-dark);
+            margin-bottom: 15px;
+        }
+        .testimonial span {
+            font-weight: 700;
+            color: var(--red-kun);
+        }
+
+        /* --- 5. KHUYẾN MÃI (CTA) --- */
+        .cta-promo {
+            background-color: var(--red-kun);
+            color: var(--white);
+            text-align: center;
+        }
+        .cta-promo h2 {
+            color: var(--white);
+            margin-bottom: 25px;
+        }
+
+        /* --- 6. MINI GAME --- */
+        .mini-game {
+            background-color: var(--yellow-kun); 
+            text-align: center;
+        }
+        .mini-game h2 {
+            color: var(--text-dark); 
+            margin-bottom: 25px;
+        }
+        .btn-minigame {
+            background-color: var(--red-kun);
+            color: var(--white);
+            font-size: 20px; 
+            padding: 15px 40px;
+            border-radius: 50px;
+            animation: pulse 1.5s infinite; 
+        }
+        .btn-minigame:hover {
+            background-color: #b72f48;
+            animation-play-state: paused; 
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(216, 58, 86, 0.7); }
+            70% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(216, 58, 86, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(216, 58, 86, 0); }
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            background-color: #333;
+            color: #ccc;
+            padding: 40px 0;
+            text-align: center;
+        }
+        footer .logo img {
+            height: 40px;
+            filter: grayscale(1) brightness(1.5); 
+            margin-bottom: 15px;
+        }
+
+        /* --- RESPONSIVE CHO DI ĐỘNG --- */
+        @media (max-width: 992px) {
+            .solution-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            .solution-card {
+                flex-direction: row; 
+                text-align: left;
+            }
+             .solution-card img {
+                width: 150px;
+                height: 150px;
+                object-fit: contain;
+                flex-shrink: 0;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            h1 { font-size: 32px; } 
+            h2 { font-size: 28px; }
+
+            header nav {
+                display: none; 
+            }
+
+            .problem-grid {
+                grid-template-columns: 1fr; 
+            }
+
+            .intro-text-below-banner p {
+                font-size: 18px;
+            }
+            
+             .solution-card {
+                flex-direction: column; 
+                text-align: center;
+            }
+            .solution-card img {
+                width: 100%;
+                max-width: 200px; 
+                height: 200px; /* Cố định chiều cao */
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="container">
+            <a href="#" class="logo">
+                <img src="kunlogo.png" alt="Logo KUN"> 
+            </a>
+            <nav>
+                <a href="#problem-section">Nỗi Lo Của Mẹ</a>
+                <a href="#solution-section">Giải Pháp KUN</a>
+                <a href="#promo-section">Khuyến Mãi</a>
+                <a href="#minigame-section" class="btn btn-primary">Chơi Mini Game</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        
+        <section class="hero">
+            <img src="Bánh mứt đón tết (1).png" 
+                
+                 class="hero-banner-image">
+        </section>
+
+        <section class="intro-text-below-banner" id="intro-below">
+            <div class="container">
+                <p>
+                    Tết này, mẹ an tâm trọn vẹn! Cùng KUN chuẩn bị "lá chắn" sức khỏe toàn diện, giúp bé yêu thỏa sức khám phá, vui vầy, để Tết của mẹ là Tết của nụ cười và hạnh phúc.
+                </p>
+                <a href="#solution-section" class="btn btn-primary">Khám Phá Bí Quyết Ngay!</a>
+            </div>
+        </section>
+
+
+        <section class="problem" id="problem-section">
+            <div class="container">
+                <h2>😟 Tết Sắp Về, Mẹ Có Đang Lo Lắng?</h2>
+                <div class="problem-grid">
+                    <div class="problem-item">
+                        <img src="THỜI TIẾT.jpg" alt="Icon thời tiết">
+                        <h3>Thời Tiết Thay Đổi</h3>
+                        <p>Trời lúc nóng, lúc lạnh thất thường làm con dễ ốm vặt, ho, sổ mũi.</p>
+                    </div>
+                    <div class="problem-item">
+                        <img src="ĂN.jpg" alt="Icon ăn uống">
+                        <h3>Ăn Uống "Thả Ga"</h3>
+                        <p>Lịch sinh hoạt đảo lộn, ăn nhiều bánh kẹo làm hệ tiêu hóa của con "biểu tình".</p>
+                    </div>
+                    <div class="problem-item">
+                        <img src="NÓI.jpg" alt="Icon hàng xóm"> 
+                        <h3>Áp Lực Từ Hàng Xóm</h3>
+                        <p>Những câu hỏi "Sao con gầy thế?" khiến mẹ áp lực, lo lắng về cân nặng của con.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="solution" id="solution-section">
+            <div class="container">
+                <h2>✨ KUN - Bí Quyết Vàng Cho Con Khỏe Toàn Diện!</h2>
+                <div class="solution-grid">
+                    
+                    <div class="solution-card">
+                        <img src="ĐỎ.png" alt="Kun Doctor Grow Plus+">
+                        <div class="solution-text">
+                            <h3>Kun Doctor Grow Plus+</h3>
+                            <p>Dinh dưỡng hiệu quả cho trẻ suy dinh dưỡng, thấp còi.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="solution-card">
+                        <img src="XANH.png" alt="Kun Doctor Eye Max">
+                        <div class="solution-text">
+                            <h3>Kun Doctor Eye Max</h3>
+                            <p>Bảo vệ và duy trì sức khỏe mắt.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="solution-card">
+                        <img src="VÀNG.png" alt="Kun Doctor Colostrum">
+                        <div class="solution-text">
+                            <h3>Kun Doctor Colostrum</h3>
+                            <p>Hỗ trợ miễn dịch.</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <section class="social-proof" id="khoanh-khac">
+            <div class="container">
+                <h2>❤️ Khi Con Khỏe, Là Mẹ Thấy Tết Vui!</h2>
+                <div class="testimonial">
+                    <p>“Tết năm ngoái cu Bin ốm suốt làm mẹ "mất Tết". Năm nay mẹ chuẩn bị KUN từ sớm, trộm vía con ăn khỏe, chơi ngoan. Mẹ an tâm hẳn!”</p>
+                    <span>- Mẹ Anh Thư (TP.HCM)</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="cta-promo" id="promo-section">
+            <div class="container">
+                <h2>🎁 Tết Rộn Ràng - Ngập Tràn Quà Tặng Từ KUN!</h2>
+                <p style="color: white; margin-bottom: 25px; max-width: 600px; margin-left: auto; margin-right: auto;">
+                    Đừng bỏ lỡ cơ hội mua KUN với giá ưu đãi và nhận ngay hàng ngàn phần quà hấp dẫn cho bé. Mua ngay hôm nay!
+                </p>
+                <a href="#" class="btn" style="background-color: var(--white); color: var(--red-kun);">Mua Online Giao Tận Nhà</a>
+            </div>
+        </section>
+
+        <section class="mini-game" id="minigame-section">
+            <div class="container">
+                <h2>🎮 THAM GIA MINI GAME: VUI TẾT CÙNG KUN! 🎮</h2>
+                <p style="color: var(--text-dark); margin-bottom: 30px; font-weight: 500;">
+                    Cơ hội trúng ngay [Tên giải thưởng] và hàng ngàn phần quà giá trị khác!
+                </p>
+                
+                <a href="http://127.0.0.1:5500/minigame.html" class="btn btn-minigame">
+                    CHƠI NGAY - RINH QUÀ LIỀN TAY!
+                </a>
+                
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        <div class="container">
+            <a href="#" class="logo">
+                <img src="kunlogo.png" alt="Logo KUN">
+            </a>
+            <p>Công ty Cổ phần Sữa Quốc tế (IDP)</p>
+            <p>&copy; 2025 Bản quyền thuộc về KUN. Mọi quyền được bảo lưu.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+    <script>
+        gsap.registerPlugin(ScrollTrigger);
+
+        // --- HIỆU ỨNG CHUNG KHI CUỘN (SCROLL) ---
+        function animateFrom(elem, direction) {
+            direction = direction || 1;
+            let x = 0, y = direction * 100;
+            if(elem.classList.contains("gs_reveal_fromLeft")) {
+                x = -100;
+                y = 0;
+            } else if (elem.classList.contains("gs_reveal_fromRight")) {
+                x = 100;
+                y = 0;
+            }
+
+            elem.style.transform = "translate(" + x + "px, " + y + "px)";
+            elem.style.opacity = "0";
+            
+            gsap.fromTo(elem, {x: x, y: y, autoAlpha: 0}, {
+                duration: 1.25, 
+                x: 0,
+                y: 0, 
+                autoAlpha: 1, 
+                ease: "expo", 
+                overwrite: "auto"
+            });
+        }
+
+        // Áp dụng hiệu ứng cho các section chính
+        gsap.utils.toArray("section:not(.hero):not(.intro-text-below-banner) h2, .problem-item, .solution-card, .testimonial, .cta-promo h2, .cta-promo p, .cta-promo .btn").forEach(function(elem) {
+            gsap.to(elem, { autoAlpha: 1 }); // Đảm bảo chúng hiển thị
+            
+            ScrollTrigger.create({
+                trigger: elem,
+                start: "top 85%", // Kích hoạt khi cuộn đến 85% của viewport
+                onEnter: function() { animateFrom(elem) }
+            });
+        });
+        
+        // Hiệu ứng cho phần text giới thiệu dưới banner (mới)
+        gsap.from(".intro-text-below-banner p", { 
+            scrollTrigger: ".intro-text-below-banner",
+            duration: 1, y: 30, opacity: 0, delay: 0.2, ease: "power3.out" 
+        });
+        gsap.from(".intro-text-below-banner .btn", { 
+            scrollTrigger: ".intro-text-below-banner",
+            duration: 1, y: 30, opacity: 0, delay: 0.4, ease: "power3.out" 
+        });
+
+
+        // Hiệu ứng riêng cho Mini Game
+         gsap.from(".mini-game h2", { 
+             scrollTrigger: ".mini-game", 
+             duration: 1, y: 30, opacity: 0, delay: 0.2
+        });
+         gsap.from(".mini-game p", { 
+             scrollTrigger: ".mini-game", 
+             duration: 1, y: 30, opacity: 0, delay: 0.4
+        });
+         gsap.from(".btn-minigame", { 
+             scrollTrigger: ".mini-game", 
+             duration: 0.8, scale: 0.5, opacity: 0, delay: 0.6, ease: "back.out(1.7)"
+        });
+
+    </script>
+</body>
+</html>
