@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bắt Lì Xì & Kim Cương - Pixel Art</title>
+<style>
+body {
+  margin:0; padding:0; overflow:hidden;
+  font-family:'Press Start 2P','Courier New',monospace;
+  background: linear-gradient(to top,#FFDAB9,#FFB6C1);
+}
+
+/* === GAME AREA === */
+#gameArea {position:relative;width:100%;height:100vh;overflow:hidden;}
+
+/* === SCORE === */
+#scoreBoard {position:absolute; top:10px; left:10px; font-size:20px; color:#FF4500; font-weight:bold;}
+
+/* === MÂY NHIỀU LỚP === */
+.cloud{
+  position:absolute; background:white; border-radius:50%;
+  opacity:0.8;
+}
+.cloud1{width:80px;height:40px; animation:cloudMove1 40s linear infinite;}
+.cloud2{width:120px;height:60px; animation:cloudMove2 50s linear infinite;}
+.cloud3{width:60px;height:30px; animation:cloudMove3 35s linear infinite;}
+@keyframes cloudMove1{0%{left:-100px;}100%{left:100%;}}
+@keyframes cloudMove2{0%{left:-150px;}100%{left:100%;}}
+@keyframes cloudMove3{0%{left:-80px;}100%{left:100%;}}
+
+/* === HOA ĐÀO RƠI === */
+.blossom{
+  position:absolute; width:10px; height:10px; background:#FF69B4;
+  border-radius:50%; animation:fall linear infinite;
+}
+.blossom1{animation-duration:6s;}
+.blossom2{animation-duration:8s;}
+.blossom3{animation-duration:10s;}
+@keyframes fall{0%{transform:translateY(0);}100%{transform:translateY(800px);}}
+
+/* === NHÂN VẬT PIXEL === */
+#player{position:absolute; bottom:30px; left:50%; transform:translateX(-50%); cursor:pointer;}
+.pixel-block{width:10px; height:10px; display:inline-block;}
+
+/* === NAM === */
+.player-male .head{background:#FFD1A4;}
+.player-male .hair{background:#A0522D;}
+.player-male .body{background:#4D79FF;}
+.player-male .leg{background:#00008B;}
+
+/* === NỮ === */
+.player-female .head{background:#FFD1A4;}
+.player-female .hair{background:#FF1493;}
+.player-female .body{background:#FF69B4;}
+.player-female .leg{background:#FF69B4;}
+
+/* === VẬT PHẨM RƠI === */
+.item{position:absolute; width:30px; height:30px; font-size:25px; cursor:pointer; user-select:none;}
+
+/* === HỘP QUÀ === */
+#giftBox{position:absolute; bottom:100px; left:50%; transform:translateX(-50%);
+  width:100px;height:100px;background:#FFD700;border-radius:10px;text-align:center;
+  line-height:100px;font-size:40px;cursor:pointer;box-shadow:0 0 20px rgba(0,0,0,0.3);display:none;transition:all 0.5s ease;}
+
+/* === PHẦN THƯỞNG === */
+#rewardText{
+  position:absolute; top:30%; left:50%; transform:translateX(-50%);
+  font-size:30px; color:#FFD700; font-weight:bold; text-align:center; display:none;
+  text-shadow:2px 2px 5px #FF4500;
+  animation:pop 0.5s ease forwards;
+}
+@keyframes pop{0%{transform:translateX(-50%) scale(0);}100%{transform:translateX(-50%) scale(1);}}
+
+/* === PHÁO HOA === */
+.firework{position:absolute;width:10px;height:10px;border-radius:50%;pointer-events:none;background:radial-gradient(circle,#FFD700 0%,#FF4500 80%);}
+
+/* === FORM === */
+#startForm{position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+  background:#fff; padding:20px; border-radius:15px; box-shadow:0 0 15px rgba(0,0,0,0.3); text-align:center;}
+#startForm input,#startForm select,#startForm button{margin:10px 0; padding:10px; font-size:14px;}
+#startForm button{background:#FF6F61; color:#fff; border:none; border-radius:5px; cursor:pointer;}
+</style>
+</head>
+<body>
+<div id="gameArea">
+  <div id="scoreBoard">Score: 0</div>
+  <div id="player"></div>
+  <div id="giftBox">🎁</div>
+  <div id="rewardText"></div>
+</div>
+
+<div id="startForm">
+  <h2>Bắt Lì Xì & Kim Cương</h2>
+  <input type="text" id="name" placeholder="Tên của bạn"><br>
+  <select id="character">
+    <option value="male">Nam</option>
+    <option value="female">Nữ</option>
+  </select><br>
+  <button onclick="startGame()">Bắt đầu!</button>
+</div>
+
+<script>
+// ==== MÂY & HOA ====
+for(let i=0;i<5;i++){
+  const c=document.createElement('div'); c.className='cloud'+(i%3+1)+' cloud';
+  c.style.top=(10+i*12)+'%'; document.getElementById('gameArea').appendChild(c);
+}
+for(let i=0;i<15;i++){
+  const b=document.createElement('div'); b.className='blossom'+(i%3+1)+' blossom';
+  b.style.left=Math.random()*window.innerWidth+'px';
+  b.style.animationDelay=Math.random()*5+'s';
+  document.getElementById('gameArea').appendChild(b);
+}
+
+// ==== GAME LOGIC ====
+const gameArea=document.getElementById('gameArea');
+const playerDiv=document.getElementById('player');
+const scoreBoard=document.getElementById('scoreBoard');
+const giftBox=document.getElementById('giftBox');
+const rewardText=document.getElementById('rewardText');
+const startForm=document.getElementById('startForm');
+
+let score=0, playerX=window.innerWidth/2;
+let gameInterval, gameTimeout;
+
+// ==== TẠO NHÂN VẬT PIXEL ====
+function setCharacter(type){
+  playerDiv.innerHTML='';
+  const p=document.createElement('div'); p.className=type==='male'?'player-male':'player-female';
+  // tạo pixel head
+  for(let i=0;i<4;i++){
+    const row=document.createElement('div'); row.style.height='10px';
+    for(let j=0;j<4;j++){
+      const block=document.createElement('div'); block.className='pixel-block '+(i===0?'hair':'head');
+      block.style.float='left';
+      row.appendChild(block);
+    }
+    p.appendChild(row);
+  }
+  // thân
+  for(let i=0;i<6;i++){
+    const row=document.createElement('div'); row.style.height='10px';
+    for(let j=0;j<3;j++){
+      const block=document.createElement('div'); block.className='pixel-block body';
+      block.style.float='left';
+      row.appendChild(block);
+    }
+    p.appendChild(row);
+  }
+  playerDiv.appendChild(p);
+  playerDiv.style.left=playerX+'px';
+}
+
+// ==== DI CHUYỂN ====
+document.addEventListener('keydown', e=>{
+  if(giftBox.style.display==='none'){
+    if(e.key==='ArrowLeft') playerX=Math.max(playerX-20,0);
+    if(e.key==='ArrowRight') playerX=Math.min(playerX+20, window.innerWidth-30);
+    playerDiv.style.left = playerX+'px';
+  }
+});
+let startX=null;
+gameArea.addEventListener('touchstart', e=>{startX=e.touches[0].clientX;});
+gameArea.addEventListener('touchmove', e=>{
+  if(startX!==null){
+    let diff=e.touches[0].clientX-startX;
+    playerX=Math.min(Math.max(playerX+diff,0), window.innerWidth-30);
+    playerDiv.style.left = playerX+'px'; startX=e.touches[0].clientX;
+  }
+});
+
+// ==== VẬT PHẨM RƠI ====
+function createItem(){
+  const item=document.createElement('div'); item.className='item';
+  const isDiamond=Math.random()<0.25;
+  item.textContent=isDiamond?'💎':'🧧';
+  item.dataset.points=isDiamond?30:10;
+  item.style.left=Math.random()*(window.innerWidth-30)+'px';
+  item.style.top='-40px';
+  gameArea.appendChild(item);
+  let speed=2+Math.random()*3;
+  function fall(){
+    let top=parseFloat(item.style.top);
+    if(top>window.innerHeight){item.remove();}
+    else{
+      item.style.top=top+speed+'px';
+      const itemX=parseFloat(item.style.left); const itemY=parseFloat(item.style.top);
+      if(itemY+30>=window.innerHeight-30 && itemX+30>=playerX && itemX<=playerX+30){
+        score+=parseInt(item.dataset.points);
+        scoreBoard.textContent='Score: '+score;
+        item.remove();
+      } else requestAnimationFrame(fall);
+    }
+  } fall();
+}
+
+// ==== BẮT ĐẦU GAME ====
+function startGame(){
+  const name=document.getElementById('name').value.trim();
+  const character=document.getElementById('character').value;
+  if(!name){alert('Vui lòng nhập tên!'); return;}
+  startForm.style.display='none';
+  setCharacter(character);
+  score=0; scoreBoard.textContent='Score: 0';
+  giftBox.style.display='none'; rewardText.style.display='none';
+  gameInterval=setInterval(createItem,400);
+  gameTimeout=setTimeout(endGame,20000);
+}
+
+// ==== KẾT THÚC GAME ====
+function endGame(){ clearInterval(gameInterval); showGiftBox(); }
+
+// ==== MỞ QUÀ ====
+function showGiftBox(){
+  giftBox.style.display='block'; giftBox.style.transform='translateX(-50%) translateY(0) rotate(0deg)';
+}
+giftBox.addEventListener('click', ()=>{
+  giftBox.style.transform='translateX(-50%) translateY(-100px) rotate(-20deg)';
+  setTimeout(()=>{
+    giftBox.style.display='none';
+    rewardText.style.display='block';
+    rewardText.innerHTML=`🎉 Bạn nhận được voucher: KUN-${Math.floor(Math.random()*1000)} 🎉`;
+    for(let i=0;i<20;i++){
+      const flying=document.createElement('div'); flying.className='item';
+      flying.textContent=Math.random()<0.3?'💎':'🧧';
+      flying.style.left=(window.innerWidth/2-15)+'px';
+      flying.style.top=(window.innerHeight-150)+'px';
+      gameArea.appendChild(flying);
+      let dx=(Math.random()-0.5)*6, dy=-Math.random()*6-2, opacity=1;
+      function fly(){
+        const top=parseFloat(flying.style.top);
+        const left=parseFloat(flying.style.left);
+        if(opacity<=0){flying.remove();}
+        else{
+          flying.style.top=(top+dy)+'px';
+          flying.style.left=(left+dx)+'px';
+          opacity-=0.02; flying.style.opacity=opacity;
+          requestAnimationFrame(fly);
+        }
+      } fly();
+    }
+    for(let i=0;i<30;i++) createFirework();
+  },500);
+});
+
+// ==== PHÁO HOA ====
+function createFirework(){
+  const fw=document.createElement('div'); fw.className='firework';
+  fw.style.left=Math.random()*window.innerWidth+'px';
+  fw.style.top=Math.random()*window.innerHeight/2+'px';
+  gameArea.appendChild(fw);
+  let size=10+Math.random()*10; fw.style.width=size+'px'; fw.style.height=size+'px';
+  setTimeout(()=>fw.remove(),1500);
+}
+</script>
+</body>
+</html>
